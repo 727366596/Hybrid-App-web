@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>首页</title>
+  <!--CSS-->
+  <link rel="stylesheet" href="../lib/vant-ui/vant.min.css"/>
+  <link rel="stylesheet" href="../style/main.css"/>
+  <!--JavaScript-->
+  <script type="text/javascript" src="../lib/zepto/zepto.min.js"></script>
+  <script type="text/javascript" src="../lib/vue/vue.min.js"></script>
+  <script type="text/javascript" src="../lib/vant-ui/vant.min.js"></script>
+  <script type="text/javascript" src="../utils/utils.js"></script>
+  <script type="text/javascript" src="../components/SelectImages.js"></script>
+  <script type="text/javascript" src="js/CheckInOfGoods.js"></script>
+</head>
+<body>
+<div class="page" id="app" v-cloak>
+  <van-nav-bar
+    class="m-header"
+    title="验收详情"
+    left-text="返回"
+    left-arrow
+    @click-left="back">
+  </van-nav-bar>
+  <div class="m-content" style="bottom:50px">
+    <van-cell-group>
+      <van-field v-model="form.ScheduledReceipt" required label="入库量：">
+        <div slot="button" @click="countUnitSourceShow=true">{{form.countUnitText}}</div>
+      </van-field>
+    <van-cell required title="实际到货时间" is-link @click="dateSourceShow=true">
+      {{form.date || '请选择实际到货时间'}}
+    </van-cell>
+    </van-cell-group>
+    <van-cell-group>
+      <select-image
+        label="上传图片"
+        :value="form.images"
+        :base64="form.images"
+        :max-pic-count="3">
+      </select-image>
+    </van-cell-group>
+    <van-cell-group>
+      <van-field
+        v-model="form.remark"
+        label="备注："
+        type="textarea"
+        placeholder="来说两句吧~"
+        rows="5"
+        autosize>
+      </van-field>
+    </van-cell-group>
+  </div>
+  <div class="m-footer">
+    <div class="m-footer">
+      <div class="m-button" @click="confirmIn">确认入库</div>
+    </div>
+  </div>
+  <!--采货量单位 start-->
+  <van-popup v-model="countUnitSourceShow" position="bottom"
+             :close-on-click-overlay="false">
+    <van-picker
+      show-toolbar
+      title="采货量单位"
+      :columns="countUnitSource"
+      @cancel="countUnitSourceShow = false"
+      @confirm="onCountUnitConfirm"
+    ></van-picker>
+  </van-popup>
+  <!--采货量单位 end-->
+  <!--选择预计到货时间 start-->
+  <van-popup v-model="dateSourceShow" position="bottom"
+             :close-on-click-overlay="false">
+    <van-datetime-picker
+      type="datetime"
+      @cancel="dateSourceShow = false"
+      @confirm="onDateConfirm">
+    </van-datetime-picker>
+  </van-popup>
+  <!--选择预计到货时间 end-->
+</div>
+<script type="text/javascript">
+  U.on("H5Ready", function () {
+    A.init();
+  });
+</script>
+</body>
+</html>

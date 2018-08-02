@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>首页</title>
+  <!--CSS-->
+  <link rel="stylesheet" href="../lib/vant-ui/vant.min.css"/>
+  <link rel="stylesheet" href="../style/main.css"/>
+  <style>
+    .storage-list{
+      box-sizing: border-box;
+      padding: 10px 10px 0 10px;
+    }
+    .storage-item{
+      border-left: 2px solid #38f;
+      font-size: 14px;
+    }
+    .receiver-item{
+      padding: 5px;
+      text-align: center;
+    }
+    .receiver-item .receiver-image{
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: 100%;
+      background-image: url("../style/images/avatar.png");
+    }
+    .receiver-item .receiver-name{
+      font-size: 12px;
+    }
+    .search-button{
+      width: 50px;
+      text-align: center;
+    }
+  </style>
+  <!--JavaScript-->
+  <script type="text/javascript" src="../lib/zepto/zepto.min.js"></script>
+  <script type="text/javascript" src="../lib/vue/vue.min.js"></script>
+  <script type="text/javascript" src="../lib/vant-ui/vant.min.js"></script>
+  <script type="text/javascript" src="../utils/utils.js"></script>
+  <!--页面依赖组件及js-->
+  <script type="text/javascript" src="../components/SelectImages.js"></script>
+  <script type="text/javascript" src="js/AddOrder.js"></script>
+</head>
+<body>
+<div class="page" id="app" v-cloak>
+  <van-nav-bar
+      class="m-header"
+      title="采货单"
+      left-text="返回"
+      left-arrow
+      @click-left="back">
+  </van-nav-bar>
+  <div class="m-content" style="bottom: 50px;">
+    <van-cell-group>
+      <van-cell
+          required
+          title="作物："
+          is-link
+          @click="cropSourceShow = true">{{crop || '请选择作物'}}</van-cell>
+      <van-field
+          v-model="form.quatity"
+          required
+          label="采货量："
+          placeholder="请输入采货量">
+        <div slot="button"
+             @click="quatityUnitSourceShow = true">{{form.quatityUnitName}}</div>
+      </van-field>
+      <van-field
+          v-model="form.price"
+          required
+          label="单价："
+          placeholder="请输入单价">
+        <div slot="button">元 / 斤</div>
+      </van-field>
+    </van-cell-group>
+    <van-cell-group>
+      <van-cell
+          required
+          title="货源地："
+          is-link
+          @click="sourceFarmShow = true">
+        {{sourceSupply || '请选择货源地'}}
+      </van-cell>
+      <van-field
+          v-model="form.contact"
+          required
+          label="联系人："
+          placeholder="请输入卖货人姓名">
+      </van-field>
+      <van-field
+          v-model="form.telephone"
+          required
+          label="手机号："
+          placeholder="请输入手机号">
+      </van-field>
+    </van-cell-group>
+    <van-cell-group>
+      <van-cell
+          required
+          title="仓库："
+          is-link
+          @click="storageSourceShow = true">
+        {{form.storageName || '请选择仓库'}}
+      </van-cell>
+      <van-cell
+          required
+          title="接货人："
+          is-link
+          @click="receiverSourceShow = true">
+        {{form.receiverName || '请选择接货人'}}
+      </van-cell>
+      <van-cell
+          required
+          title="预计到货时间："
+          is-link
+          @click="dateSourceShow = true">
+        {{form.expectDeliverTime || '请选择到货时间'}}
+      </van-cell>
+    </van-cell-group>
+    <van-cell-group>
+      <select-image
+          label="上传图片"
+          :value="form.senderPicIds"
+          :max-pic-count="3">
+      </select-image>
+    </van-cell-group>
+    <van-cell-group>
+      <van-field
+          v-model="form.senderRemark"
+          label="备注："
+          type="textarea"
+          placeholder="来说两句吧~"
+          rows="5"
+          autosize>
+      </van-field>
+    </van-cell-group>
+  </div>
+  <div class="m-footer">
+    <div class="m-button" @click="submit">提 交</div>
+  </div>
+
+  <!--选择作物 start-->
+  <van-popup v-model="quatityUnitSourceShow" position="bottom"
+             :close-on-click-overlay="false">
+    <van-picker
+        show-toolbar
+        title="采货量单位"
+        :columns="quatityUnitSource"
+        @cancel="quatityUnitSourceShow = false"
+        @confirm="onCountUnitConfirm"
+    ></van-picker>
+  </van-popup>
+  <!--选择作物 end-->
+
+  <!--采货量单位 start-->
+  <van-popup v-model="cropSourceShow" position="bottom"
+             :close-on-click-overlay="false">
+    <van-picker
+        show-toolbar
+        title="作物品种"
+        :columns="cropSourceColumns"
+        @cancel="cropSourceShow = false"
+        @confirm="onCropConfirm"
+        @change="onCropChange"
+    ></van-picker>
+  </van-popup>
+  <!--采货量单位 end-->
+
+  <!--选择货源地 start-->
+  <div class="page" v-if="sourceFarmShow">
+    <van-nav-bar
+        class="m-header"
+        title="选择货源地"
+        left-text="返回"
+        left-arrow
+        @click-left="sourceFarmShow = false">
+    </van-nav-bar>
+    <van-search placeholder="搜索基地"
+                v-model.trim="sourceFarmSearchValue"
+                show-action
+                style="position: absolute;top: 46px;width: 100%"
+                @search="searchSourceFarm">
+      <div class="search-button" slot="action"
+           @click="searchSourceFarm">搜索</div>
+    </van-search>
+    <div class="m-content" style="top: 90px;padding-top: 0">
+      <van-list
+          v-model="sourceFarmLoading"
+          :finished="sourceFarmFinished"
+          @load="loadingSourceFarm" >
+        <van-collapse v-model="sourceFarmActiveNames">
+          <van-collapse-item
+              v-for="(base, baseIndex) in sourceFarmSource"
+              :key="baseIndex"
+              :title="base.name"
+              :name="baseIndex">
+            <template v-if="!base.children || base.children.length === 0">
+              <van-cell-group>
+                <van-cell>暂无地块</van-cell>
+              </van-cell-group>
+            </template>
+            <template v-else>
+              <van-cell-group>
+                <van-cell
+                    v-for="(field, fieldIndex) in base.children"
+                    :key="fieldIndex"
+                    @click="onAddressConfirm(base, field)">
+                  {{field.name}}
+                </van-cell>
+              </van-cell-group>
+            </template>
+          </van-collapse-item>
+        </van-collapse>
+
+      </van-list>
+    </div>
+  </div>
+  <!--选择货源地 end-->
+
+  <!--选择仓库 start-->
+  <div class="page" v-if="storageSourceShow">
+    <van-nav-bar
+        class="m-header"
+        title="选择仓库"
+        left-text="返回"
+        left-arrow
+        @click-left="storageSourceShow = false">
+    </van-nav-bar>
+    <van-search
+        placeholder="搜索仓库"
+        v-model.trim="storageSearchValue"
+        show-action
+        @search="searchStorage"
+        style="position: absolute;top: 46px;width: 100%">
+      <div class="search-button" slot="action"
+           @click="searchStorage">搜索</div>
+    </van-search>
+    <div class="m-content" style="top: 90px;padding-top: 0">
+      <van-list
+          class="storage-list"
+          v-model="storageLoading"
+          :finished="storageFinished"
+          @load="loadingStorage" >
+        <div class="storage-item m-shadow-notice"
+             v-for="(storage, index) in storageSource"
+             :key="index"
+             @click="onStorageConfirm(storage)">
+          {{storage.name}}
+        </div>
+      </van-list>
+    </div>
+  </div>
+  <!--选择仓库 end-->
+
+  <!--选择接货人 start-->
+  <div class="page" v-if="receiverSourceShow">
+    <van-nav-bar
+        class="m-header"
+        title="选择接货人"
+        left-text="返回"
+        left-arrow
+        @click-left="receiverSourceShow = false">
+    </van-nav-bar>
+    <van-search placeholder="搜索接货人"
+                v-model.trim="receiverSourceValue"
+                show-action
+                style="position: absolute;top: 46px;width: 100%">
+      <div class="search-button" slot="action"
+           @click="searchReceiver">搜索</div>
+    </van-search>
+    <div class="m-content" style="top: 90px;padding-top: 0">
+      <van-row>
+        <van-col span="6"
+                 class="receiver-item"
+                 v-for="(receiver, index) in receiverSourceFilter"
+                 :key="index">
+          <div @click="onReceiverConfirm(receiver)">
+            <div class="receiver-image"></div>
+            <div class="receiver-name m-ellipsis">{{receiver.name}}</div>
+          </div>
+        </van-col>
+      </van-row>
+    </div>
+  </div>
+  <!--选择接货人 end-->
+
+  <!--选择预计到货时间 start-->
+  <van-popup v-model="dateSourceShow" position="bottom"
+             :close-on-click-overlay="false">
+    <van-datetime-picker
+        type="datetime"
+        v-model="currentDate"
+        @cancel="dateSourceShow = false"
+        @confirm="onDateConfirm">
+    </van-datetime-picker>
+  </van-popup>
+  <!--选择预计到货时间 end-->
+
+</div>
+<script type="text/javascript">
+  U.on("H5Ready", function () {
+    A.init();
+  });
+</script>
+</body>
+</html>

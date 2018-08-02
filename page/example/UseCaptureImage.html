@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>首页</title>
+  <!--CSS-->
+  <link rel="stylesheet" href="../../lib/vant-ui/vant.min.css"/>
+  <link rel="stylesheet" href="../../style/main.css"/>
+  <!--JavaScript-->
+  <script type="text/javascript" src="../../lib/zepto/zepto.min.js"></script>
+  <script type="text/javascript" src="../../lib/vue/vue.min.js"></script>
+  <script type="text/javascript" src="../../lib/vant-ui/vant.min.js"></script>
+  <script type="text/javascript" src="../../utils/utils.js"></script>
+  <!--页面依赖组件及js-->
+  <script type="text/javascript" src="../../components/SelectImages.js"></script>
+  <!--<script type="text/javascript" src="js/UseCaptureImage.js"></script>-->
+</head>
+<body>
+<div class="page" id="app" v-cloak>
+  <van-nav-bar
+      class="m-header"
+      title="测试拍照组件"
+      left-arrow>
+  </van-nav-bar>
+  <div class="m-content" style="bottom: 50px;">
+    <van-cell-group>
+      <select-image
+          label="上传图片"
+          :value="images1"
+          :max-pic-count="3">
+      </select-image>
+    </van-cell-group>
+  </div>
+  <div class="m-footer">
+    <div class="m-button" @click="submit">提 交</div>
+  </div>
+</div>
+<script type="text/javascript">
+  window.view = new Vue({
+    el: "#app",
+    data: {
+      images1: [{url: 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1531744557022&di=6e82d2482547e51293b83ca624a7d056&imgtype=jpg&src=http%3A%2F%2Fimg4.imgtn.bdimg.com%2Fit%2Fu%3D704112284%2C47432911%26fm%3D214%26gp%3D0.jpg'}], //图片
+      images2: []
+    },
+    created: function () {
+
+    },
+    methods: {
+      submit: function () {
+        console.log('submit');
+      }
+    },
+    computed: {
+
+    },
+    watch: {
+
+    }
+  });
+</script>
+</body>
+</html>

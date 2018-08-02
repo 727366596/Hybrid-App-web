@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>首页</title>
+  <!--CSS-->
+  <link rel="stylesheet" href="../lib/vant-ui/vant.min.css"/>
+  <link rel="stylesheet" href="../style/main.css"/>
+  <style>
+    .van-cell__value{
+      text-align: left!important;
+      -webkit-box-flex: 1.5;
+      -webkit-flex: 1.5;
+      flex:1.5;
+    }
+    textarea{
+      border: 1px solid #EEEEEE!important;
+    }
+  </style>
+  <!--JavaScript-->
+  <script type="text/javascript" src="../lib/zepto/zepto.min.js"></script>
+  <script type="text/javascript" src="../lib/vue/vue.min.js"></script>
+  <script type="text/javascript" src="../lib/vant-ui/vant.min.js"></script>
+  <script type="text/javascript" src="../utils/utils.js"></script>
+  <script type="text/javascript" src="../components/SelectImages.js"></script>
+  <script type="text/javascript" src="js/RejectInOfGoods.js"></script>
+</head>
+<body>
+<div class="page" id="app" v-cloak>
+  <van-nav-bar
+    class="m-header"
+    title="拒绝入库"
+    left-text="返回"
+    left-arrow
+    @click-left="back">
+  </van-nav-bar>
+  <div class="m-content" style="bottom:50px">
+    <van-cell-group>
+      <van-cell required title="拒绝原因：">
+        <van-radio-group v-model="form.reason" @change="reasonChange">
+          <van-radio name="1">未按时交货</van-radio>
+          <van-radio name="2">货品质量不符合要求</van-radio>
+          <van-radio name="3">其他原因</van-radio>
+        </van-radio-group>
+        <van-field v-if="reasonFlag"
+          v-model="form.reasonText"
+          type="textarea"
+          placeholder="来说两句吧~"
+          rows="5"
+          autosize>
+        </van-field>
+      </van-cell>
+    </van-cell-group>
+    <van-cell-group>
+      <select-image
+        label="上传图片"
+        :value="form.images"
+        :base64="form.images"
+        :max-pic-count="3">
+      </select-image>
+    </van-cell-group>
+  </div>
+  <div class="m-footer">
+    <div class="m-button" @click="rejectIn" style="background: #F56C6C">拒绝入库</div>
+  </div>
+</div>
+<script type="text/javascript">
+  U.on("H5Ready", function () {
+    A.init();
+  });
+</script>
+</body>
+</html>

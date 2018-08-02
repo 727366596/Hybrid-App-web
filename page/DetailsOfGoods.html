@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>首页</title>
+  <!--CSS-->
+  <link rel="stylesheet" href="../lib/vant-ui/vant.min.css"/>
+  <link rel="stylesheet" href="../style/main.css"/>
+  <style>
+    .active{
+      color: red;
+    }
+    .bottomBox{
+      bottom: 50px;
+    }
+    .m-button{
+      display: block;
+      float: left;
+    }
+    .m-button.reject{
+      width: 40%;
+      background-color: #F56C6C;
+    }
+    .m-button.receipt{
+      width: 60%;
+    }
+  </style>
+  <!--JavaScript-->
+  <script type="text/javascript" src="../lib/zepto/zepto.min.js"></script>
+  <script type="text/javascript" src="../lib/vue/vue.min.js"></script>
+  <script type="text/javascript" src="../lib/vant-ui/vant.min.js"></script>
+  <script type="text/javascript" src="../utils/utils.js"></script>
+  <script type="text/javascript" src="../components/SelectImages.js"></script>
+  <script type="text/javascript" src="js/DetailsOfGoods.js"></script>
+</head>
+<body>
+<div class="page" id="app" v-cloak>
+  <van-nav-bar
+    class="m-header"
+    title="货单详情"
+    left-text="返回"
+    left-arrow
+    @click-left="back">
+  </van-nav-bar>
+  <div class="m-content"
+       :class="{bottomBox:(form.status===2&&form.power)}">
+    <van-cell-group>
+      <van-cell required title="作物：">
+        {{form.crop}}
+      </van-cell>
+      <van-cell required title="采货量：">
+        {{form.count}}{{form.unitName}}
+      </van-cell>
+      <van-cell required title="单价：">
+        {{form.unitPrice}}
+      </van-cell>
+    </van-cell-group>
+    <van-cell-group>
+      <van-cell required title="货源地：">
+        {{form.address}}
+      </van-cell>
+      <van-cell required title="联系人：">
+        {{form.person}}
+      </van-cell>
+      <van-cell required title="手机号：">
+        {{form.phone}}
+      </van-cell>
+    </van-cell-group>
+    <van-cell-group>
+      <van-cell required title="仓库：">
+       {{form.store}}
+      </van-cell>
+      <van-cell required title="采货人：">
+        {{form.consignee}}
+      </van-cell>
+      <van-cell required title="接货人：">
+        {{form.receiver}}
+      </van-cell>
+      <van-cell required title="预计到货时间：">
+        {{form.date}}
+      </van-cell>
+    </van-cell-group>
+    <van-cell-group>
+      <select-image
+        label="上传图片"
+        :value="form.images"
+        :base64="form.images"
+        :max-pic-count="3" type="readOnly">
+      </select-image>
+    </van-cell-group>
+    <van-cell-group>
+      <van-cell title="备注：">
+        {{form.remark}}
+      </van-cell>
+    </van-cell-group>
+    <van-cell-group v-if="!(form.status===2)">
+      <van-cell title="验收入库"></van-cell>
+      <van-cell required title="入库状态：">
+        {{form.status===0?"正常入库":"拒绝入库"}}
+      </van-cell>
+      <div v-if="form.status===0">
+      <van-cell required title="入库量：">
+        <span v-bind:class="{ active: form.volume!==form.count }">{{form.volume}}</span>{{form.unitName}}
+      </van-cell>
+      <van-cell required title="实际到货时间：">
+        {{form.arrivalDate}}
+      </van-cell>
+      </div>
+      <div v-if="form.status===1">
+        <van-cell required title="拒绝原因：" :label="form.reasonText">
+          {{form.reason}}
+        </van-cell>
+      </div>
+    </van-cell-group>
+    <van-cell-group v-if="!(form.status===2)">
+      <select-image
+        label="上传图片"
+        :value="form.recieverPicIds"
+        :base64="form.recieverPicIds"
+        :max-pic-count="3" type="readOnly">
+      </select-image>
+    </van-cell-group>
+    <van-cell-group v-if="form.status===0">
+      <van-cell title="备注：">
+        <div class="m-tl">{{form.recieverRemark}}</div>
+      </van-cell>
+    </van-cell-group>
+  </div>
+  <div class="m-footer" v-if="form.status===2&&form.power">
+    <div class="m-button reject" @click="rejectFun">拒绝入库</div>
+    <div class="m-button receipt" @click="checkFun">验收入库</div>
+  </div>
+</div>
+<script type="text/javascript">
+  U.on("H5Ready", function () {
+    A.init();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>首页</title>
+  <!--CSS-->
+  <link rel="stylesheet" href="../lib/vant-ui/vant.min.css"/>
+  <link rel="stylesheet" href="../style/main.css"/>
+  <style>
+    .list-wrap{
+      padding: 5px 20px;
+    }
+    .pos-icon{
+      position: relative;
+      text-align: center;
+      line-height:104px;
+    }
+    .label-box{
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      padding: 4px;
+      margin-left: -16px;
+      width: 24px;
+      height:24px;
+      word-break:break-all;
+      white-space: pre-wrap;
+      font-size: 12px;
+      z-index: 3;
+      line-height: 12px;
+    }
+    .bg-color-red:before{
+      content: '拒绝入库';
+      position: absolute;
+      top: 4px;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+    }
+    .bg-color-red{
+      background: red;
+    }
+    .bg-color-red:after{
+      position: absolute;
+      left: 0;
+      top:16px;
+      z-index: 2;
+      display: block;
+      content: "";
+      width:0;
+      height:0;
+      border:16px solid red;
+      border-bottom:16px solid transparent;
+    }
+    .bg-color-green:before{
+      content: '正常入库';
+      position: absolute;
+      top: 4px;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+    }
+    .bg-color-green{
+      background: green;
+    }
+    .bg-color-green:after{
+      position: absolute;
+      left: 0;
+      top:16px;
+      z-index: 2;
+      display: block;
+      content: "";
+      width:0;
+      height:0;
+      border:16px solid green;
+      border-bottom:16px solid transparent;
+    }
+    .bg-color-orange{
+      background: #ffda14
+    }
+    .bg-color-orange:before{
+      content: '等待收货';
+      position: absolute;
+      top: 4px;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+    }
+    .bg-color-orange:after{
+      position: absolute;
+      left: 0;
+      top:16px;
+      z-index: 2;
+      display: block;
+      content: "";
+      width:0;
+      height:0;
+      border:16px solid #ffda14;
+      border-bottom:16px solid transparent;
+    }
+  </style>
+  <!--JavaScript-->
+  <script type="text/javascript" src="../lib/zepto/zepto.min.js"></script>
+  <script type="text/javascript" src="../lib/vue/vue.min.js"></script>
+  <script type="text/javascript" src="../lib/vant-ui/vant.min.js"></script>
+  <script type="text/javascript" src="../utils/utils.js"></script>
+  <script type="text/javascript" src="js/ReceiptOfGoods.js"></script>
+</head>
+<body>
+<div class="page" id="app" v-cloak>
+  <van-nav-bar
+    class="m-header"
+    title="采货单据"
+    left-text="返回"
+    left-arrow
+    @click-left="back">
+  </van-nav-bar>
+  <van-search placeholder="请输入关键词"
+              v-model.trim="keyword"
+              show-action="false"
+              style="position: absolute;top: 46px;width: 100%">
+  </van-search>
+  <div class="m-content" style="top: 90px;">
+    <van-list v-model="loading" :finished="finished" @load="onLoad">
+    <van-cell-group v-for="item in goodsList" :key="item.id" @click.native="goTo(item.id)">
+      <van-row class="list-wrap">
+        <van-col span="10">
+          <ul style="padding-left: 5px;">
+            <li>作物名称：</li>
+            <li>采货量：</li>
+            <li>采货人：</li>
+            <li>仓库：</li>
+            <li>{{item.status===0?'实际':'预计'}}到货时间：</li>
+          </ul>
+        </van-col>
+        <van-col span="10">
+          <ul>
+            <li>{{item.cropName}}</li>
+            <li>{{item.goodsVolume}}</li>
+            <li>{{item.consignee}}</li>
+            <li>{{item.warehouse}}</li>
+            <li>{{item.realTime}}</li>
+          </ul>
+        </van-col>
+        <van-col span="4" class="pos-icon">
+          <div class="label-box" :class="status[item.status]"></div>
+          <van-icon name="arrow"></van-icon>
+        </van-col>
+      </van-row>
+    </van-cell-group>
+    </van-list>
+  </div>
+</div>
+<script type="text/javascript">
+  U.on("H5Ready", function () {
+    A.init();
+  });
+</script>
+</body>
+</html>

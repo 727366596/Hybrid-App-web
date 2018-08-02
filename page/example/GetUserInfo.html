@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>首页</title>
+  <!--CSS-->
+  <link rel="stylesheet" href="../../lib/vant-ui/vant.min.css"/>
+  <link rel="stylesheet" href="../../style/main.css"/>
+  <!--JavaScript-->
+  <script type="text/javascript" src="../../lib/zepto/zepto.min.js"></script>
+  <script type="text/javascript" src="../../lib/vue/vue.min.js"></script>
+  <script type="text/javascript" src="../../lib/vant-ui/vant.min.js"></script>
+  <script type="text/javascript" src="../../utils/utils.js"></script>
+  <!--页面依赖组件及js-->
+  <!--<script type="text/javascript" src="js/UseCaptureImage.js"></script>-->
+</head>
+<body>
+<div class="page" id="app" v-cloak>
+  <van-nav-bar
+      class="m-header"
+      title="测试获取用户"
+      left-arrow>
+  </van-nav-bar>
+  <div class="m-content" style="bottom: 50px;">
+    <van-cell-group>
+      <van-cell title="用户信息">{{userinfo}}</van-cell>
+    </van-cell-group>
+  </div>
+  <div class="m-footer">
+    <div class="m-button" @click="submit">提 交</div>
+  </div>
+</div>
+<script type="text/javascript">
+  window.view = new Vue({
+    el: "#app",
+    data: {
+      userinfo: '暂无信息'
+    },
+    created: function () {
+      var userinfo = Mobile.getUserInfo();
+      alert(userinfo);
+      this.userinfo = userinfo;
+    },
+    methods: {
+      submit: function () {
+        console.log('submit');
+      }
+    },
+    computed: {
+
+    },
+    watch: {
+
+    }
+  });
+</script>
+</body>
+</html>
